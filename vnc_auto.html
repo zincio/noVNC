@@ -306,6 +306,10 @@
             }
         }
 
+        function stopPropagation(e) {
+            e.stopPropagation();
+        }
+
         function handleS3FilesList(json) {
             var byteSuffixes = ['b', 'kb', 'mb', 'gb', 'tb'];
             var frag = document.createDocumentFragment();
@@ -342,6 +346,9 @@
                 anchor.textContent = key_parts[key_parts.length - 1];
                 anchor.target = "_blank"
                 anchor.href = item['Url'];
+                // NoVNC has a document listener that cancels mouseevents
+                // over the canvas area.  Cancel the canceler.
+                anchor.onclick = stopPropagation;
                 name.appendChild(anchor);
                 name.appendChild(clipboard);
                 tr.appendChild(name);
