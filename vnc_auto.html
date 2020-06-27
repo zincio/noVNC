@@ -370,6 +370,8 @@
         }
 
         function buildDownloadsPane(json) {
+            zn_download.className = "";
+
             /* Deal with the transfer in progress stuff */
             handleTransferInProgressFiles(json);
 
