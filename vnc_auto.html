@@ -385,7 +385,7 @@
                 var date = e.target.getAttribute('data-zn-download-date')
                 var zn_download = document.getElementById("zn-download");
                 zn_download.style.display = 'block';
-                fetch('/downloads', {
+                fetch('/s3downloads', {
                     method: 'POST',
                     headers: {
                         'Content-type': 'application/json',
