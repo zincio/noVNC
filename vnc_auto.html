@@ -386,7 +386,8 @@
                 var date = e.target.getAttribute('data-zn-download-date')
                 var zn_download = document.getElementById("zn-download");
                 zn_download.style.display = 'block';
-                fetch('/s3downloads', {
+                fetch('/s3downloads?cachebust='+Date.now(), {
+                    cache: "no-store",
                     method: 'POST',
                     headers: {
                         'Content-type': 'application/json',
