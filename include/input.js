@@ -315,12 +315,14 @@ var Keyboard, Mouse;
 
             var evt = (e ? e : window.event);
             var pos = Util.getEventPosition(e, this._target, this._scale);
+            var znDownload = document.getElementById("zn-download")
 
             /* Stop propagation if inside canvas area */
-            if ((pos.realx >= 0) && (pos.realy >= 0) &&
+            if (!(znDownload && znDownload.style.display == "none") &&
+                (pos.realx >= 0) && (pos.realy >= 0) &&
                 (pos.realx < this._target.offsetWidth) &&
                 (pos.realy < this._target.offsetHeight)) {
-                //Util.Debug("mouse event disabled");
+                Util.Debug("mouse event disabled", e);
                 Util.stopEvent(e);
                 return false;
             }
