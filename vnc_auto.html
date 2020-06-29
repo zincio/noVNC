@@ -279,6 +279,7 @@
         }
 
         function copyDownloadUrl(e) {
+            e.stopPropagation();
             var anchor = e.target.parentNode.getElementsByTagName("a")[0];
             navigator.clipboard.writeText(anchor.href);
             e.target.title = "Copied!"
