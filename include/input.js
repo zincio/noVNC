@@ -318,7 +318,7 @@ var Keyboard, Mouse;
             var znDownload = document.getElementById("zn-download")
 
             /* Stop propagation if inside canvas area */
-            if (!(znDownload && znDownload.style.display == "none") &&
+            if (!(znDownload && znDownload.style.display == "block") &&
                 (pos.realx >= 0) && (pos.realy >= 0) &&
                 (pos.realx < this._target.offsetWidth) &&
                 (pos.realy < this._target.offsetHeight)) {
