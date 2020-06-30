@@ -344,12 +344,12 @@
             } else {
                 tiphr.style.display = 'block';
                 tip.style.display = 'block';
-                var frag = document.createDocumentFragment()
+                var frag = document.createDocumentFragment();
                 for(var i = json["in_progress"].length - 1; i >= 0; i--) {
                     var item = json["in_progress"][i];
                     var div = document.createElement('div');
-                    div.textContent = i;
-                    frag.append(item)
+                    div.textContent = item;
+                    frag.appendChild(div)
                 }
                 tipc.innerHTML = "";
                 tipc.appendChild(frag);
