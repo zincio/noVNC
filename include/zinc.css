@@ -1,5 +1,9 @@
 #zn-download {
-    position: relative;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
     z-index: 20;
     display: none;
 }

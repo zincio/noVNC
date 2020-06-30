@@ -141,6 +141,7 @@
                             <table id="zn-download-file-list-table" class="zn-table-striped" cellspacing=0 cellpadding=0>
                                 <thead>
                                     <th>File</th>
+                                    <th><!-- copy button --></th>
                                     <th>Size</th>
                                     <th>Date</th>
                                 </thead>
@@ -246,6 +247,52 @@
             }
         }
 
+        function setClipboard(textToCopy) {
+            try {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textToCopy);
+                } else if (window.clipboardData) {
+                    // IE
+                    window.clipboardData.setData('text', textToCopy);
+                } else {
+                    // other browsers, iOS, Mac OS
+                    var el = document.getElementById("zn-copy-input");
+                    if (!el) {
+                        el = document.createElement("span");
+                        el.id = "zn-copy-input";
+                        el.type = "text";
+                        el.style.position = "absolute";
+                        el.style.opacity = "0";
+                        document.body.appendChild(el);
+                    }
+                    el.style.display = "block";
+                    var oldContentEditable = el.contentEditable;
+                    var oldReadOnly = el.readOnly;
+
+                    try {
+                        el.contentEditable = 'true';  // specific to iOS
+                        el.readOnly = false;
+                        var range = document.createRange();
+                        var selection = window.getSelection();
+                        el.value = textToCopy;
+                        el.textContent = textToCopy;
+                        range.selectNodeContents(el);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        var copyRet = document.execCommand('copy');
+                    } finally {
+                        el.contentEditable = oldContentEditable;
+                        el.readOnly = oldReadOnly;
+                    }
+                    el.style.display = "none";
+                }
+                // success
+            } catch (e) {
+                // copy failed.
+                console.log(e);
+            }
+        }
+
         window.onresize = function () {
             // When the window has been resized, wait until the size remains
             // the same for 0.5 seconds before sending the request for changing
@@ -278,11 +325,13 @@
             zn_download.style.display = "none";
         }
 
-        async function copyDownloadUrl(e) {
-            e.stopPropagation();
-            var anchor = e.target.parentNode.getElementsByTagName("a")[0];
-            await navigator.clipboard.writeText(anchor.href);
-            e.target.title = "Copied!"
+        function copyDownloadUrl(e) {
+            var button = e.target;
+            var originalText = button.textContent;
+            var anchor = e.target.parentNode.parentNode.getElementsByClassName("zn-coyote-file")[0];
+            setClipboard(anchor.href);
+            button.textContent = " Copied! "
+            setTimeout(function () { button.textContent = originalText }, 5000);
         }
 
         function handleTransferInProgressFiles(json) {
@@ -337,22 +386,25 @@
                 var tr = document.createElement("tr");
                 frag.appendChild(tr);
                 var anchor = document.createElement("a");
-                var name = document.createElement("td");
+                var fileTd = document.createElement("td");
                 var key_parts = item['Key'].split("/");
-                var clipboard = document.createElement("span")
-                clipboard.style.cursor = "default"
-                clipboard.textContent = " 📋";
-                clipboard.title = "Copy Url"
-                clipboard.onclick = copyDownloadUrl;
+                anchor.className = "zn-coyote-file";
                 anchor.textContent = key_parts[key_parts.length - 1];
                 anchor.target = "_blank"
                 anchor.href = item['Url'];
                 // NoVNC has a document listener that cancels mouseevents
                 // over the canvas area.  Cancel the canceler.
-                anchor.onclick = stopPropagation;
-                name.appendChild(anchor);
-                name.appendChild(clipboard);
-                tr.appendChild(name);
+                fileTd.appendChild(anchor);
+                tr.appendChild(fileTd);
+
+                var copyTd = document.createElement("td");
+                var clipboard = document.createElement("button")
+                clipboard.style.cursor = "default"
+                clipboard.textContent = "Copy URL";
+                clipboard.onclick = copyDownloadUrl;
+                copyTd.appendChild(clipboard);
+                tr.appendChild(copyTd)
+
                 var size = item['Size'];
                 var sizeSuffix = 0;
                 while (size / 1024 > 1) {
@@ -521,6 +573,12 @@
                 return; // don't continue trying to connect
             }
 
+            var znDownloadParent = document.getElementById("zn-download");
+            znDownloadParent.onclick = stopPropagation;
+            znDownloadParent.oncontextmenu = stopPropagation;
+            znDownloadParent.onkeydown = stopPropagation;
+            znDownloadParent.onkeyup = stopPropagation;
+            znDownloadParent.onkeypress = stopPropagation;
             var coyoteName = WebUtil.getConfigVar('name', '');
             var dlbg = document.getElementById('zn-download-bg');
             dlbg.onclick = closeDownloadWindow;
