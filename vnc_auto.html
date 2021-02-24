@@ -613,7 +613,8 @@
                 document.getElementById('zn-creds').style.display = "block";
             });
             document.getElementById('zn-amz-chat-link').addEventListener('click', function() {
-                onClipboard(null, 'https://www.amazon.com/gp/help/customer/contact-us/ref=hp_gt_comp_cu?ie=UTF8')
+                setClipboard('https://www.amazon.com/gp/help/customer/contact-us/ref=hp_gt_comp_cu?ie=UTF8');
+                onClipboard(null, 'https://www.amazon.com/gp/help/customer/contact-us/ref=hp_gt_comp_cu?ie=UTF8');
             });
             document.getElementById('zn-close').addEventListener('click', function() {
                 fetch('/acmd', {
